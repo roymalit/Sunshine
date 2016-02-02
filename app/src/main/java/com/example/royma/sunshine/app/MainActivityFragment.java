@@ -33,16 +33,18 @@ public class MainActivityFragment extends Fragment {
                 "Wednesday - Sunny - 28/18",
                 "Thursday - Cloudy - 23/13",
                 "Friday - Foggy - 15/8",
+                "Saturday - Thunderstorms - 16/8",
+                "Sunday - Sunny - 22/16"
         };
 
         // Initialise array list
-        List<String> forecast_arraylist = new ArrayList<String>(Arrays.asList(data));
+        List<String> forecast_arraylist = new ArrayList<>(Arrays.asList(data));
 
 
         // ArrayAdapter takes data from a source and creates a view that represents
         // each data entry (populates listView)
 
-        mForecastAdapter = new ArrayAdapter<String>(
+        mForecastAdapter = new ArrayAdapter<>(
                 // Context (fragment's parent activity)
                 getActivity(),
                 // ID of list item layout
