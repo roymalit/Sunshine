@@ -1,5 +1,7 @@
 package com.example.royma.sunshine.app;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -104,7 +107,27 @@ public class ForecastFragment extends Fragment {
 
         // Attaches adapter to view
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
+
         listView.setAdapter(mForecastAdapter);
+        // Attach onClick listener to items in the list
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Context context = getContext();
+                // Gets item at current position in Adapter (weather for selected day)
+                String forecast = mForecastAdapter.getItem(position);
+
+                // int duration = Toast.LENGTH_SHORT;
+                // Toast item at current position
+                // Toast.makeText(context, forecast, duration).show();
+
+                Intent detailIntent = new Intent(getContext(), DetailActivity.class);
+                detailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(detailIntent);
+
+            }
+        });
 
         return rootView;
     }
