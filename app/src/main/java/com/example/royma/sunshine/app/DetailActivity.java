@@ -62,7 +62,7 @@ public class DetailActivity extends AppCompatActivity {
             Intent intent = getActivity().getIntent();
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-            // TODO continue trying to get extra text
+            // Check intent. Set received intent text as textView message
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
                 String forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
                 ((TextView) rootView.findViewById(R.id.detail_forecast_textview))
