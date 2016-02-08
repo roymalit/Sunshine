@@ -1,6 +1,5 @@
 package com.example.royma.sunshine.app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -39,6 +38,8 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
     // ArrayAdapter initialised outside of methods
     ArrayAdapter<String> mForecastAdapter;
+    // Unique key used for intents
+    public final static String EXTRA_FORECAST = "com.example.royma.sunshine.app.FORECAST";
 
     public ForecastFragment() {
     }
@@ -113,14 +114,8 @@ public class ForecastFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Context context = getContext();
                 // Gets item at current position in Adapter (weather for selected day)
                 String forecast = mForecastAdapter.getItem(position);
-
-                // int duration = Toast.LENGTH_SHORT;
-                // Toast item at current position
-                // Toast.makeText(context, forecast, duration).show();
 
                 Intent detailIntent = new Intent(getContext(), DetailActivity.class);
                 detailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
