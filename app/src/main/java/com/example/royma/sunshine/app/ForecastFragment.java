@@ -1,9 +1,11 @@
 package com.example.royma.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -38,8 +40,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment {
     // ArrayAdapter initialised outside of methods
     ArrayAdapter<String> mForecastAdapter;
-    // Unique key used for intents
-    public final static String EXTRA_FORECAST = "com.example.royma.sunshine.app.FORECAST";
+
 
     public ForecastFragment() {
     }
@@ -64,10 +65,14 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // Reloads
+        // Reloads forecast list
         if (id == R.id.action_refresh) {
             FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("SE77DS,UK");
+            // Retrieve user preferred location. Use default if none found
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            String locationPref = sharedPref.getString(getString(R.string.pref_location_key),
+                    getString(R.string.pref_location_default));
+            weatherTask.execute(locationPref);
             return true;
         }
 
@@ -82,11 +87,11 @@ public class ForecastFragment extends Fragment {
         String [] data = {
                 "Today - Sunny - 26/15",
                 "Tomorrow - Rainy - 20/11",
-                "Wednesday - Sunny - 28/18",
-                "Thursday - Cloudy - 23/13",
-                "Friday - Foggy - 15/8",
-                "Saturday - Thunderstorms - 16/8",
-                "Sunday - Sunny - 22/16"
+                "Wed - Sunny - 28/18",
+                "Thu - Cloudy - 23/13",
+                "Fri - Foggy - 15/8",
+                "Sat - Thunderstorms - 16/8",
+                "Sun - Sunny - 22/16"
         };
         // Initialise array list
         List<String> forecast_arraylist = new ArrayList<>(Arrays.asList(data));
