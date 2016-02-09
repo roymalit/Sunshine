@@ -31,8 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -67,12 +65,7 @@ public class ForecastFragment extends Fragment {
 
         // Reloads forecast list
         if (id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            // Retrieve user preferred location. Use default if none found
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-            String locationPref = sharedPref.getString(getString(R.string.pref_location_key),
-                    getString(R.string.pref_location_default));
-            weatherTask.execute(locationPref);
+            updateWeather();
             return true;
         }
 
@@ -82,38 +75,18 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Add forecast elements
-        String [] data = {
-                "Today - Sunny - 26/15",
-                "Tomorrow - Rainy - 20/11",
-                "Wed - Sunny - 28/18",
-                "Thu - Cloudy - 23/13",
-                "Fri - Foggy - 15/8",
-                "Sat - Thunderstorms - 16/8",
-                "Sun - Sunny - 22/16"
-        };
-        // Initialise array list
-        List<String> forecast_arraylist = new ArrayList<>(Arrays.asList(data));
-
         // ArrayAdapter takes data from a source and creates a view that represents
         // each data entry (populates listView)
-
         mForecastAdapter = new ArrayAdapter<>(
-                // Context (fragment's parent activity)
-                getActivity(),
-                // ID of list item layout
-                R.layout.list_item_forecast,
-                // ID of textView to populate
-                R.id.list_item_forecast_textview,
-                //Forecast data
-                forecast_arraylist);
+                getActivity(),  // Context (fragment's parent activity)
+                R.layout.list_item_forecast,    // ID of list item layout
+                R.id.list_item_forecast_textview,   // ID of textView to populate
+                new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Attaches adapter to view
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-
         listView.setAdapter(mForecastAdapter);
         // Attach onClick listener to items in the list
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,20 +94,34 @@ public class ForecastFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Gets item at current position in Adapter (weather for selected day)
                 String forecast = mForecastAdapter.getItem(position);
-
+                // Launch Detail activity with selected forecast passed as an extra
                 Intent detailIntent = new Intent(getContext(), DetailActivity.class);
                 detailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
                 startActivity(detailIntent);
-
             }
         });
 
         return rootView;
     }
 
+    private void updateWeather(){
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        // Retrieve user preferred location. Use default if none found
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String locationPref = sharedPref.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(locationPref);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
     /*
-     * Background process for gathering weather data from server
-     */
+         * Background process for gathering weather data from server
+         */
     public class FetchWeatherTask extends AsyncTask <String,Void,String[]>{
         // Class name.
         // .class.getSimpleName() makes sure names are always in sync - throws error if not
