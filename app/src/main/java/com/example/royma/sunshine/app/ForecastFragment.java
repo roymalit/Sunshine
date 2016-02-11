@@ -120,8 +120,8 @@ public class ForecastFragment extends Fragment {
     }
 
     /*
-         * Background process for gathering weather data from server
-         */
+     * Background process for gathering weather data from server
+     */
     public class FetchWeatherTask extends AsyncTask <String,Void,String[]>{
         // Class name.
         // .class.getSimpleName() makes sure names are always in sync - throws error if not
@@ -238,8 +238,12 @@ public class ForecastFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            String tempUnitPref = sharedPref.getString(getString(R.string.pref_tempUnit_key),
+                    getString(R.string.pref_tempUnit_default));
+
             String format = "json";
-            String units = "metric";
+            String units = tempUnitPref;
             int numDays = 7;
 
             try {

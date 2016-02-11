@@ -15,6 +15,32 @@
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_location_key" translatable="false">location</string>
     <!-- Default postal code for location preference [CHAR LIMIT=NONE]-->
-    <string name="pref_location_default" translatable="false">london, uk</string>
+    <string name="pref_location_default" translatable="false">London, UK</string>
+
+    <!-- Label for temperature unit preference -->
+    <string name="pref_tempUnit_label">Temperature Units</string>
+    <!-- Key name for storing temperature units in SharedPreferences -->
+    <string name="pref_tempUnit_key" translatable="false">tempUnit</string>
+
+    <!-- Labels for temperature units -->
+    <string name="temp_metric_label">Metric</string>
+    <string name="temp_imperial_label">Imperial</string>
+    <!-- Key name for storing temperature units in SharedPreferences -->
+    <string name="temp_metric_key" translatable="false">metric</string>
+    <string name="temp_imperial_key" translatable="false">imperial</string>
+    <!-- Default temperature units preference [CHAR LIMIT=NONE]-->
+    <string name="pref_tempUnit_default" translatable="false">metric</string>
+
+    <!-- Arrays used for temperature preference spinner -->
+    <string-array name="tempUnit_entries">
+        <item>@string/temp_metric_label</item>
+        <item>@string/temp_imperial_label</item>
+    </string-array>
+    
+    <string-array name="tempUnit_values">
+        <item>@string/temp_metric_key</item>
+        <item>@string/temp_imperial_key</item>
+    </string-array>
+
 
 </resources>

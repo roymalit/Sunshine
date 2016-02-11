@@ -8,4 +8,12 @@
         android:inputType="text"
         android:singleLine="true" />
 
+    <ListPreference
+        android:title="@string/pref_tempUnit_label"
+        android:key="@string/pref_tempUnit_key"
+        android:dialogTitle="@string/pref_tempUnit_label"
+        android:entries="@array/tempUnit_entries"
+        android:entryValues="@array/tempUnit_values"
+        android:defaultValue="@string/pref_tempUnit_default" />
+
 </PreferenceScreen>
