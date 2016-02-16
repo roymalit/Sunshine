@@ -1,10 +1,11 @@
 package com.example.royma.sunshine.app;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -30,8 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -54,6 +53,7 @@ public class ForecastFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.forecastfragment, menu);
+        inflater.inflate(R.menu.viewlocation, menu);
     }
 
     @Override
@@ -63,10 +63,9 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // Reloads
+        // Reloads forecast list
         if (id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("SE77DS,UK");
+            updateWeather();
             return true;
         }
 
@@ -76,60 +75,48 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Add forecast elements
-        String [] data = {
-                "Today - Sunny - 26/15",
-                "Tomorrow - Rainy - 20/11",
-                "Wednesday - Sunny - 28/18",
-                "Thursday - Cloudy - 23/13",
-                "Friday - Foggy - 15/8",
-                "Saturday - Thunderstorms - 16/8",
-                "Sunday - Sunny - 22/16"
-        };
-        // Initialise array list
-        List<String> forecast_arraylist = new ArrayList<>(Arrays.asList(data));
-
         // ArrayAdapter takes data from a source and creates a view that represents
         // each data entry (populates listView)
-
         mForecastAdapter = new ArrayAdapter<>(
-                // Context (fragment's parent activity)
-                getActivity(),
-                // ID of list item layout
-                R.layout.list_item_forecast,
-                // ID of textView to populate
-                R.id.list_item_forecast_textview,
-                //Forecast data
-                forecast_arraylist);
+                getActivity(),  // Context (fragment's parent activity)
+                R.layout.list_item_forecast,    // ID of list item layout
+                R.id.list_item_forecast_textview,   // ID of textView to populate
+                new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Attaches adapter to view
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-
         listView.setAdapter(mForecastAdapter);
         // Attach onClick listener to items in the list
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Context context = getContext();
                 // Gets item at current position in Adapter (weather for selected day)
                 String forecast = mForecastAdapter.getItem(position);
-
-                // int duration = Toast.LENGTH_SHORT;
-                // Toast item at current position
-                // Toast.makeText(context, forecast, duration).show();
-
+                // Launch Detail activity with selected forecast passed as an extra
                 Intent detailIntent = new Intent(getContext(), DetailActivity.class);
                 detailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
                 startActivity(detailIntent);
-
             }
         });
 
         return rootView;
+    }
+
+    private void updateWeather(){
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        // Retrieve user preferred location. Use default if none found
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String locationPref = sharedPref.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(locationPref);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     /*
@@ -251,8 +238,12 @@ public class ForecastFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            String tempUnitPref = sharedPref.getString(getString(R.string.pref_tempUnit_key),
+                    getString(R.string.pref_tempUnit_default));
+
             String format = "json";
-            String units = "metric";
+            String units = tempUnitPref;
             int numDays = 7;
 
             try {
