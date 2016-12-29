@@ -18,10 +18,11 @@ android {
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'OPEN_WEATHER_MAP_API_KEY', MyOpenWeatherMapApiKey
+        it.buildConfigField 'String', 'OPEN_WEATHER_MAP_API_KEY', '"d15ae6d93a97d328693425b32d82fef7"'
     }
 }
 
+MyOpenWeatherMapApiKey = "d15ae6d93a97d328693425b32d82fef7"
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

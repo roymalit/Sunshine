@@ -76,7 +76,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // ArrayAdapter takes data from a source and creates a view that represents
-        // each data entry (populates listView)
+        // each data entry (populates gridView)
         mForecastAdapter = new ArrayAdapter<>(
                 getActivity(),  // Context (fragment's parent activity)
                 R.layout.list_item_forecast,    // ID of list item layout
