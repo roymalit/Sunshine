@@ -41,6 +41,16 @@ public class WeatherContract {
     public static final class LocationEntry implements BaseColumns {
         public static final String TABLE_NAME = "location";
 
+        // public static final String COLUMN_LOC_ID = "location_id";
+
+        public static final String COLUMN_LOCATION_SETTING = "location_setting";
+
+        public static final String COLUMN_CITY_NAME = "city_name";
+
+        public static final String COLUMN_COORD_LONG = "longitude";
+
+        public static final String COLUMN_COORD_LAT = "latitude";
+
     }
 
     /* Inner class that defines the table contents of the weather table */
