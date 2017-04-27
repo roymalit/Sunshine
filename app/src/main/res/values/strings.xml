@@ -25,23 +25,23 @@
     <string name="pref_tempUnit_key" translatable="false">tempUnit</string>
 
     <!-- Labels for temperature units -->
-    <string name="temp_metric_label">Metric</string>
-    <string name="temp_imperial_label">Imperial</string>
+    <string name="pref_tempUnit_metric_label">Metric</string>
+    <string name="pref_tempUnit_imperial_label">Imperial</string>
     <!-- Key name for storing temperature units in SharedPreferences -->
-    <string name="temp_metric_key" translatable="false">metric</string>
-    <string name="temp_imperial_key" translatable="false">imperial</string>
+    <string name="pref_tempUnit_metric" translatable="false">metric</string>
+    <string name="pref_tempUnit_imperial" translatable="false">imperial</string>
     <!-- Default temperature units preference [CHAR LIMIT=NONE]-->
     <string name="pref_tempUnit_default" translatable="false">metric</string>
 
     <!-- Arrays used for temperature preference spinner -->
     <string-array name="tempUnit_entries">
-        <item>@string/temp_metric_label</item>
-        <item>@string/temp_imperial_label</item>
+        <item>@string/pref_tempUnit_metric_label</item>
+        <item>@string/pref_tempUnit_imperial_label</item>
     </string-array>
     
     <string-array name="tempUnit_values">
-        <item>@string/temp_metric_key</item>
-        <item>@string/temp_imperial_key</item>
+        <item>@string/pref_tempUnit_metric</item>
+        <item>@string/pref_tempUnit_imperial</item>
     </string-array>
 
 </resources>
