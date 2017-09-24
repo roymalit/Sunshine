@@ -2,6 +2,8 @@ package com.example.royma.sunshine.app;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -12,17 +14,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ArrayList;
+import com.example.royma.sunshine.app.data.WeatherContract;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class ForecastFragment extends Fragment {
     // ArrayAdapter initialised outside of methods
-    ArrayAdapter<String> mForecastAdapter;
+    ForecastAdapter mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -60,13 +61,22 @@ public class ForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String locationSetting = Utility.getPreferredLocation(getActivity());
+
+        // Sort order:  Ascending, by date.
+        String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+        Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
+                locationSetting, System.currentTimeMillis());
+
+        Cursor cur = getActivity().getContentResolver().query(weatherForLocationUri,
+                null, null, null, sortOrder);
+
         // ArrayAdapter takes data from a source and creates a view that represents
         // each data entry (populates gridView)
-        mForecastAdapter = new ArrayAdapter<>(
+        mForecastAdapter = new ForecastAdapter(
                 getActivity(),  // Context (fragment's parent activity)
-                R.layout.list_item_forecast,    // ID of list item layout
-                R.id.list_item_forecast_textview,   // ID of textView to populate
-                new ArrayList<String>());
+                cur,    // ID of list item layout
+                0);   // ID of textView to populate
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -78,10 +88,10 @@ public class ForecastFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Gets item at current position in Adapter (weather for selected day)
-                String forecast = mForecastAdapter.getItem(position);
+                //String forecast = mForecastAdapter.getItem(position);
                 // Launch Detail activity with selected forecast passed as an extra
                 Intent detailIntent = new Intent(getContext(), DetailActivity.class);
-                detailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+                //detailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
                 startActivity(detailIntent);
             }
         });
@@ -90,11 +100,10 @@ public class ForecastFragment extends Fragment {
     }
 
     private void updateWeather(){
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity(), mForecastAdapter);
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
         // Retrieve user preferred location. Use default if none found
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String locationPref = sharedPref.getString(getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default));
+        String locationPref = Utility.getPreferredLocation(getActivity());
         weatherTask.execute(locationPref);
     }
 

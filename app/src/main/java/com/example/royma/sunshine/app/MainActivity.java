@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openLocationInMap(){
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = sharedPref.getString(getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default));
+        String location = Utility.getPreferredLocation(this);
 
         // Creates URI for map intent
         Uri mapIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
