@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             openLocationInMap();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

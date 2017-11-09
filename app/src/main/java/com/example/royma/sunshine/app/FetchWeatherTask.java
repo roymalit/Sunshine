@@ -96,6 +96,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
             // The resulting URI contains the ID for the row. Extract the locationID from the URI.
             locationId = ContentUris.parseId(insertedUri);
         }
+
+        //locationCursor.close();
+        // Wait, that worked?  Yes!
         return locationId;
     }
 
@@ -235,7 +238,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 // Convert vector into an array
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-
                 inserted = mContext.getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, cvArray);
             }
 
@@ -317,6 +319,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                 return null;
             }
             forecastJsonStr = buffer.toString();
+            getWeatherDataFromJson(forecastJsonStr, locationQuery);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
@@ -338,5 +341,4 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
         }
         return null;
     }
-
 }

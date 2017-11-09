@@ -71,10 +71,10 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
             // Receive intent sent from forecast Activity
             Intent intent = getActivity().getIntent();
-
-            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             // Check intent. Set received intent text as textView message
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
                 mForecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -112,7 +112,6 @@ public class DetailActivity extends AppCompatActivity {
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT, mForecastStr + FORECAST_SHARE_HASHTAG);
-
             return shareIntent;
         }
     }

@@ -194,7 +194,8 @@ public class WeatherProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        sortOrder);
+                        sortOrder
+                );
                 break;
             }
             // "location"
@@ -206,7 +207,8 @@ public class WeatherProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        sortOrder);
+                        sortOrder
+                );
                 break;
             }
 
@@ -255,7 +257,6 @@ public class WeatherProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Student: Start by getting a writable database
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
         // Student: Use the uriMatcher to match the WEATHER and LOCATION URI's we are going to
         // handle.  If it doesn't match these, throw an UnsupportedOperationException.
         final int match = sUriMatcher.match(uri);
@@ -281,7 +282,6 @@ public class WeatherProvider extends ContentProvider {
         // is null.
         // Oh, and you should notify the listeners here.
         getContext().getContentResolver().notifyChange(uri, null);
-
         // Student: return the actual rows deleted
         return rowsDeleted;
     }
@@ -305,6 +305,7 @@ public class WeatherProvider extends ContentProvider {
 
         switch (match) {
             case WEATHER: {
+                normalizeDate(values);
                 rowsUpdated = db.update(WeatherContract.WeatherEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             }
@@ -315,8 +316,9 @@ public class WeatherProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
-
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return rowsUpdated;
     }
 
