@@ -1,11 +1,9 @@
 package com.example.royma.sunshine.app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -137,16 +135,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private void updateWeather(){
         FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
         // Retrieve user preferred location. Use default if none found
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         String locationPref = Utility.getPreferredLocation(getActivity());
         weatherTask.execute(locationPref);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateWeather();
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        updateWeather();
+//    }
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
@@ -172,5 +169,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader loader) {
         mForecastAdapter.swapCursor(null);
+    }
+
+    public void onLocationChange(){
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 }

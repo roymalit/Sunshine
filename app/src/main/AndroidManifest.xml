@@ -41,6 +41,8 @@
         <provider
             android:name=".data.WeatherProvider"
             android:authorities="com.example.royma.sunshine.app"
+            android:enabled="true"
+            android:exported="true"
             />
     </application>
 
