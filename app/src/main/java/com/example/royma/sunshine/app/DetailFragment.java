@@ -54,7 +54,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
             WeatherContract.WeatherEntry.COLUMN_PRESSURE,
             WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
-            WeatherContract.WeatherEntry.COLUMN_DEGREES
+            WeatherContract.WeatherEntry.COLUMN_DEGREES,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
     };
 
     // these constants correspond to the projection defined above, and must change if the
@@ -68,6 +69,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int COL_WEATHER_PRESSURE = 6;
     private static final int COL_WEATHER_WIND_SPEED = 7;
     private static final int COL_WEATHER_DEGREES = 8;
+    private static final int COL_WEATHER_CONDITION_ID = 9;
+
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -149,9 +152,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if (!data.moveToFirst()) { return; }
 
         // Read weather icon ID from cursor
-        int weatherId = data.getInt(ForecastFragment.COL_WEATHER_ID);
+        int weatherId = data.getInt(DetailFragment.COL_WEATHER_CONDITION_ID);
         // Use placeholder image for now
-        mIconView.setImageResource(R.mipmap.ic_launcher);
+        mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
         String dayString = Utility.getDayName(getContext(),
                 data.getLong(COL_WEATHER_DATE));
