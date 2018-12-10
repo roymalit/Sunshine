@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Forecast list style for tablets -->
+    <style name="ForecastListStyle">
+        <item name="android:choiceMode">singleChoice</item>
+    </style>
+</resources>
