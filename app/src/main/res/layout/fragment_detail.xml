@@ -1,12 +1,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.royma.sunshine.app.DetailFragment">
 
 
@@ -15,48 +16,66 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Header: Day, Date -->
         <TextView
             android:id="@+id/detail_day_textView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textSize="24sp"
+            app:fontFamily="sans-serif-condensed"
+            tools:text="@tools:sample/date/day_of_week" />
 
         <TextView
             android:id="@+id/detail_date_textView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textColor="@color/grey_700"
+            android:textSize="16sp"
+            app:fontFamily="sans-serif-condensed"
+            tools:text="@tools:sample/date/ddmmyy" />
 
         <!-- Main content: high, low ,art, weather state -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/detail_high_textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal" />
+                    android:gravity="center_horizontal"
+                    android:textAppearance="@android:style/TextAppearance.Large"
+                    android:textSize="96sp"
+                    app:fontFamily="sans-serif-light"
+                    tools:text="@tools:sample/date/day_of_week" />
 
                 <TextView
                     android:id="@+id/detail_low_textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal" />
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/grey_700"
+                    android:textSize="48sp"
+                    app:fontFamily="sans-serif-light"
+                    tools:text="@tools:sample/date/hhmm" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
@@ -71,9 +90,12 @@
 
                 <TextView
                     android:id="@+id/detail_forecast_textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_horizontal" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textSize="22sp"
+                    app:fontFamily="sans-serif-condensed"
+                    tools:text="@tools:sample/cities" />
 
             </LinearLayout>
         </LinearLayout>
@@ -82,16 +104,25 @@
         <TextView
             android:id="@+id/detail_humidity_textView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            app:fontFamily="sans-serif-light"
+            tools:text="@tools:sample/first_names" />
 
         <TextView
             android:id="@+id/detail_windSpeed_textView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            app:fontFamily="sans-serif-light"
+            tools:text="@tools:sample/last_names" />
 
         <TextView
             android:id="@+id/detail_pressure_textView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            app:fontFamily="sans-serif-light"
+            tools:text="@tools:sample/full_names" />
     </LinearLayout>
 </ScrollView>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -18,19 +19,22 @@
             android:id="@+id/list_item_date_textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
             android:id="@+id/list_item_high_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
         <TextView
             android:id="@+id/list_item_low_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
     </LinearLayout>
 
@@ -54,7 +58,8 @@
             android:id="@+id/list_item_forecast_textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal" />
+            android:gravity="center_horizontal"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

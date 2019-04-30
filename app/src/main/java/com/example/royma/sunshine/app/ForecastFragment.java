@@ -28,9 +28,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
+    private boolean mUseTodayLayout;
 
     private static final String SELECTED_KEY = "selected_position";
-    
+    //TODO: Implement first list item selected by default
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -114,6 +115,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 getActivity(),  // Context (fragment's parent activity)
                 null,    // ID of list item layout
                 0);   // ID of textView to populate
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -177,11 +179,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         weatherTask.execute(locationPref);
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        updateWeather();
-//    }
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
@@ -214,5 +211,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLocationChange(){
         updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout){
+        mUseTodayLayout = useTodayLayout;
+        if(mForecastAdapter != null){
+            mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+        }
     }
 }
