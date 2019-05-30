@@ -186,6 +186,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 data.getString(COL_WEATHER_DESC);
         mDescriptionView.setText(weatherDescription);
 
+        // For accessibility, overwrite content description for icon field
+        mIconView.setContentDescription(weatherDescription + " icon");
+
         boolean isMetric = Utility.isMetric(getActivity());
 
         String high = Utility.formatTemperature(getActivity(),
@@ -195,6 +198,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         String low = Utility.formatTemperature(getActivity(),
                 data.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
         mLowTempView.setText(low);
+
+        // For accessibility, specify highs & lows
+        mHighTempView.setContentDescription("Highs of " + high);
+        mLowTempView.setContentDescription("Lows of " + low);
 
         int formatId = R.string.format_humidity;
         String humidity = String.format(getContext().getString(formatId),
