@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLocation = Utility.getPreferredLocation(this);
-        setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
@@ -49,7 +49,9 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_forecast);
 
-        forecastFragment.setUseTodayLayout(!mTwoPane);
+        if (null != forecastFragment) {
+            forecastFragment.setUseTodayLayout(!mTwoPane);
+        }
     }
 
     @Override
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             // fragment transaction.
             Bundle args = new Bundle();
             args.putParcelable(DetailFragment.DETAIL_URI, dateUri);
+
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()

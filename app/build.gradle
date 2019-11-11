@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
-
+// Keep SDK Version <= 26. Breaks JavaTest and app running on tablets otherwise
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.royma.sunshine.app"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
@@ -21,13 +20,14 @@ android {
     }
     productFlavors {
     }
+    buildToolsVersion = '29.0.0'
 }
 
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
 }

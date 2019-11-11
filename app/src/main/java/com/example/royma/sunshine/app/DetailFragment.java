@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.example.royma.sunshine.app.data.WeatherContract;
 
+import static com.example.royma.sunshine.app.data.WeatherContract.WeatherEntry;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -49,16 +51,16 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int DETAIL_LOADER = 0;
 
     private static final String[] DETAIL_COLUMNS = {
-            WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
-            WeatherContract.WeatherEntry.COLUMN_DATE,
-            WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
-            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
-            WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
-            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
-            WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
-            WeatherContract.WeatherEntry.COLUMN_DEGREES,
-            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID
+            WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID,
+            WeatherEntry.COLUMN_DATE,
+            WeatherEntry.COLUMN_SHORT_DESC,
+            WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherEntry.COLUMN_HUMIDITY,
+            WeatherEntry.COLUMN_PRESSURE,
+            WeatherEntry.COLUMN_WIND_SPEED,
+            WeatherEntry.COLUMN_DEGREES,
+            WeatherEntry.COLUMN_WEATHER_ID
     };
 
     // these constants correspond to the projection defined above, and must change if the
@@ -149,7 +151,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (null != mUri){
+        if (null != mUri && null != getActivity()){
             // Now create and return a CursorLoader that will take care of
             // creating a Cursor for the data being displayed.
             return new CursorLoader(
@@ -171,9 +173,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         // Read weather icon ID from cursor
         int weatherId = data.getInt(DetailFragment.COL_WEATHER_CONDITION_ID);
-        // Use placeholder image for now
+        // Use weather art image
         mIconView.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
 
+        // Read date from cursor and update views for day of week and date
         String dayString = Utility.getDayName(getContext(),
                 data.getLong(COL_WEATHER_DATE));
         mDayView.setText(dayString);
@@ -182,6 +185,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 data.getLong(COL_WEATHER_DATE));
         mDateView.setText(dateString);
 
+        // Read description from cursor and update view
         String weatherDescription =
                 data.getString(COL_WEATHER_DESC);
         mDescriptionView.setText(weatherDescription);
@@ -189,6 +193,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         // For accessibility, overwrite content description for icon field
         mIconView.setContentDescription(weatherDescription + " icon");
 
+        // Read temperatures from cursor and update view
         boolean isMetric = Utility.isMetric(getActivity());
 
         String high = Utility.formatTemperature(getActivity(),
@@ -203,6 +208,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mHighTempView.setContentDescription("Highs of " + high);
         mLowTempView.setContentDescription("Lows of " + low);
 
+        // Read humidity from cursor and update view
         int formatId = R.string.format_humidity;
         String humidity = String.format(getContext().getString(formatId),
                 data.getFloat(COL_WEATHER_HUMIDITY));
@@ -214,9 +220,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         String windSpeed = Utility.getFormattedWind(getContext(), windSpeedStr, windDirStr);
         mWindSpeedView.setText(windSpeed);
 
+        // Read pressure from cursor and update view
         String pressure = String.format(getContext().getString(R.string.format_pressure),
                 data.getDouble(COL_WEATHER_PRESSURE));
         mPressureView.setText(pressure);
+
+        // We still need this for the share intent
+        mForecast = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
 
         // If onCreateOptionsMenu has already happened, we need to update the share intent now.
         if (mShareActionProvider != null) {

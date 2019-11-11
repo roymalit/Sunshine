@@ -31,7 +31,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private boolean mUseTodayLayout;
 
     private static final String SELECTED_KEY = "selected_position";
-    //TODO: Implement first list item selected by default
+    /*TODO: Implement first list item selected by default
+        mListView.setSelection(0);
+        mListView.getSelectedView().setSelected(true);
+     */
+
     /**
      * A callback interface that all activities containing this fragment must
      * implement. This mechanism allows activities to be notified of item
@@ -130,7 +134,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
+                if (cursor != null && getActivity() != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
                     ((Callback)getActivity()).onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
                                     locationSetting, cursor.getLong(COL_WEATHER_DATE)
@@ -139,6 +143,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 mPosition = position;
             }
         });
+
+        // Selects first item when in two pane mode
+        // TODO: Make highlight first item (set pressed/activated)
+//        ListAdapter adapter = mListView.getAdapter();
+//        mListView.performItemClick(mListView.getChildAt(0), 0, adapter.getItemId(0));
+
+//        mListView.setItemChecked(0,true);
 
         // If there's instance state, mine it for useful information.
         // The end-goal here is that the user never knows that turning their device sideways
@@ -162,16 +173,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         updateWeather();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // When tablets rotate, the currently selected list item needs to be saved.
-        // When no item is selected, mPosition will be set to Listview.INVALID_POSITION,
-        // so check for that before storing.
-        if (mPosition != ListView.INVALID_POSITION){
-            outState.putInt(SELECTED_KEY, mPosition);
-        }
-
+    public void onLocationChange(){
+        updateWeather();
+        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
     private void updateWeather(){
@@ -181,9 +185,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         weatherTask.execute(locationPref);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // When tablets rotate, the currently selected list item needs to be saved.
+        // When no item is selected, mPosition will be set to Listview.INVALID_POSITION,
+        // so check for that before storing.
+        if (mPosition != ListView.INVALID_POSITION){
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+    }
 
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String locationSetting = Utility.getPreferredLocation(getActivity());
 
         // Sort order:  Ascending, by date.
@@ -191,28 +205,29 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         Uri weatherForLocationUri = WeatherContract.WeatherEntry.buildWeatherLocationWithStartDate(
                 locationSetting, System.currentTimeMillis());
 
-        return new CursorLoader(getActivity(),
-                weatherForLocationUri,
-                FORECAST_COLUMNS,
-                null,
-                null,
-                sortOrder);
+        if (getActivity() != null) {
+            return new CursorLoader(getActivity(),
+                    weatherForLocationUri,
+                    FORECAST_COLUMNS,
+                    null,
+                    null,
+                    sortOrder);
+        }
+        return null;
     }
 
     public void onLoadFinished(Loader loader, Cursor cursor) {
         mForecastAdapter.swapCursor(cursor);
-        mListView.smoothScrollToPosition(mPosition);
-
+        if (mPosition != ListView.INVALID_POSITION) {
+            // If we don't need to restart the loader, and there's a desired position to restore
+            // to, do so now.
+            mListView.smoothScrollToPosition(mPosition);
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
         mForecastAdapter.swapCursor(null);
-    }
-
-    public void onLocationChange(){
-        updateWeather();
-        getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
     public void setUseTodayLayout(boolean useTodayLayout){
