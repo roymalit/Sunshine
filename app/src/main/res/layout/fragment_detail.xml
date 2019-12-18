@@ -124,9 +124,10 @@
             app:fontFamily="sans-serif-light"
             tools:text="@tools:sample/full_names" />
 
-        <com.example.royma.sunshine.app.WindDirectionView
-            android:layout_width="320dp"
-            android:layout_height="320dp"
-            android:layout_gravity="center_horizontal" />
+        <!-- TODO: Reimplement after app release and feature completion -->
+<!--        <com.example.royma.sunshine.app.WindDirectionView-->
+<!--            android:layout_width="320dp"-->
+<!--            android:layout_height="320dp"-->
+<!--            android:layout_gravity="center_horizontal" />-->
     </LinearLayout>
 </ScrollView>
