@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +75,13 @@ class WindDirectionView extends View {
         shadowPaint = new Paint(0);
         shadowPaint.setColor(0xff101010);
         shadowPaint.setMaskFilter(new BlurMaskFilter(8, BlurMaskFilter.Blur.NORMAL));
+
+        // Detect value change for content description
+        AccessibilityManager accessibilityManager =
+                (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager.isEnabled()) {
+            sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED);
+        }
     }
 
     public WindDirectionView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -158,5 +167,12 @@ class WindDirectionView extends View {
             default:
                 return contentSize;
         }
+    }
+
+    // TODO: Implement once windSpeedDir has been created
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        // event.getText().add(windSpeedDir);
+        return true;
     }
 }
