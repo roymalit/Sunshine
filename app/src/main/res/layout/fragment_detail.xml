@@ -84,7 +84,6 @@
                     android:id="@+id/detail_icon_imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/detail_icon_content_description"
                     android:paddingLeft="6dp"
                     android:paddingRight="6dp" />
 
@@ -123,6 +122,15 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.Large"
             app:fontFamily="sans-serif-light"
-            tools:text="@tools:sample/full_names" />
+            tools:text="@tools:sample/full_names"
+            android:contentDescription="@string/wd_view_description"/>
+
+        <!-- TODO: Reimplement after app release and feature completion -->
+        <!-- View for wind direction drawable -->
+<!--        <com.example.royma.sunshine.app.WindDirectionView-->
+<!--            android:layout_width="320dp"-->
+<!--            android:layout_height="320dp"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:contentDescription="@string/wd_view_description" />-->
     </LinearLayout>
 </ScrollView>

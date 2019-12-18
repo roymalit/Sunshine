@@ -11,7 +11,6 @@
     <string name="action_share">Share</string>
 
     <!-- Strings related to Settings -->
-
     <!-- Label for location preference -->
     <string name="pref_location_label">Location</string>
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
@@ -76,5 +75,7 @@
     <string name="format_pressure">Pressure: <xliff:g id="pressure">%1.0f</xliff:g> hPa</string>
     <string name="detail_icon_content_description">Icon representing the weather description</string>
 
+    <!-- Wind direction view description -->
+    <string name="wd_view_description">Compass displaying wind direction </string>
 
 </resources>

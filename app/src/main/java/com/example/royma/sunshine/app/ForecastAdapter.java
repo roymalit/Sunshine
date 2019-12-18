@@ -14,6 +14,7 @@ import android.widget.TextView;
  * from a {@link android.database.Cursor} to a {@link android.widget.ListView}.
  */
 public class ForecastAdapter extends CursorAdapter {
+    private final int VIEW_TYPE_COUNT = 2;
     private final int VIEW_TYPE_TODAY = 0;
     private final int VIEW_TYPE_FUTURE_DAY = 1;
 
@@ -35,7 +36,7 @@ public class ForecastAdapter extends CursorAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return VIEW_TYPE_COUNT;
     }
 
     /**
@@ -136,18 +137,27 @@ public class ForecastAdapter extends CursorAdapter {
         viewHolder.dateView.setText(Utility.getFriendlyDayString(context, date));
 
         // Read weather forecast from cursor
-        String weather = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
-        viewHolder.descriptionView.setText(weather);
+        String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
+        viewHolder.descriptionView.setText(description);
+
+        // For accessibility, overwrite content description for icon field
+        viewHolder.iconView.setContentDescription(description + " icon");
 
         // Read user preference for metric or imperial temperature units
         boolean isMetric = Utility.isMetric(context);
 
         // Read high temperature from cursor
         double high = cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
-        viewHolder.highTempView.setText(Utility.formatTemperature(context, high, isMetric));
+        String sHigh = Utility.formatTemperature(context, high, isMetric);
+        viewHolder.highTempView.setText(sHigh);
 
         // Read low temperature from cursor
         double low = cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
-        viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
+        String sLow = Utility.formatTemperature(context, low, isMetric);
+        viewHolder.lowTempView.setText(sLow);
+
+        // For accessibility, specify highs & lows
+        viewHolder.highTempView.setContentDescription("Highs of " + sHigh);
+        viewHolder.lowTempView.setContentDescription("Lows of " + sLow);
     }
 }
