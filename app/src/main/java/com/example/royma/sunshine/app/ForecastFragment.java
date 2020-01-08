@@ -1,5 +1,6 @@
 package com.example.royma.sunshine.app;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.royma.sunshine.app.data.WeatherContract;
+import com.example.royma.sunshine.app.service.SunshineService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -124,7 +126,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Attaches adapter to view
-        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView = rootView.findViewById(R.id.listview_forecast);
         mListView.setAdapter(mForecastAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -174,15 +176,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     public void onLocationChange(){
+        // Updates list after location setting change
         updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
     private void updateWeather(){
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
+        Intent intent = new Intent(getActivity(), SunshineService.class);
         // Retrieve user preferred location. Use default if none found
-        String locationPref = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(locationPref);
+        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+                Utility.getPreferredLocation(getActivity()));
+        getActivity().startService(intent);
     }
 
     @Override
