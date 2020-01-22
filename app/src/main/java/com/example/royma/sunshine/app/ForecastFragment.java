@@ -1,9 +1,13 @@
 package com.example.royma.sunshine.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -31,6 +35,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
     private boolean mUseTodayLayout;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     private static final String SELECTED_KEY = "selected_position";
     /*TODO: Implement first list item selected by default
@@ -182,11 +188,18 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather(){
-        Intent intent = new Intent(getActivity(), SunshineService.class);
+        Context context = getActivity();
+        alarmMgr =  (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, SunshineService.AlarmReceiver.class);
         // Retrieve user preferred location. Use default if none found
         intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
-                Utility.getPreferredLocation(getActivity()));
-        getActivity().startService(intent);
+                Utility.getPreferredLocation(context));
+        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        // Run alarm receiver after a 5 second delay
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+                + 5 * 1000, alarmIntent);
     }
 
     @Override

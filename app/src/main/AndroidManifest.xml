@@ -43,8 +43,13 @@
             android:name=".data.WeatherProvider"
             android:authorities="com.example.royma.sunshine.app"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             />
+
+        <service
+            android:name=".service.SunshineService"/>
+        <receiver
+            android:name=".service.SunshineService$AlarmReceiver"/>
     </application>
 
 </manifest>
