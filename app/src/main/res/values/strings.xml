@@ -78,4 +78,9 @@
     <!-- Wind direction view description -->
     <string name="wd_view_description">Compass displaying wind direction </string>
 
+    <!-- Account type (for sync-adapter authenticator) -->
+        <!-- SyncAdapter related -->
+        <string name="sync_account_type">com.example.sunshine</string>
+        <string name="content_authority">com.example.royma.sunshine.app</string>
+
 </resources>

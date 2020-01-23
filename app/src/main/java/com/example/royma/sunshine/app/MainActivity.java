@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.royma.sunshine.app.sync.SunshineSyncAdapter;
+
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback{
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         if (null != forecastFragment) {
             forecastFragment.setUseTodayLayout(!mTwoPane);
         }
+
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override

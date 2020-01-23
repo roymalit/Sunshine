@@ -3,11 +3,9 @@ package com.example.royma.sunshine.app;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -22,7 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.royma.sunshine.app.data.WeatherContract;
-import com.example.royma.sunshine.app.service.SunshineService;
+import com.example.royma.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -189,17 +187,18 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateWeather(){
         Context context = getActivity();
-        alarmMgr =  (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(context, SunshineService.AlarmReceiver.class);
-        // Retrieve user preferred location. Use default if none found
-        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
-                Utility.getPreferredLocation(context));
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-        // Run alarm receiver after a 5 second delay
-        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
-                + 5 * 1000, alarmIntent);
+//        alarmMgr =  (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//
+//        Intent intent = new Intent(context, SunshineService.AlarmReceiver.class);
+//        // Retrieve user preferred location. Use default if none found
+//        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+//                Utility.getPreferredLocation(context));
+//        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//
+//        // Run alarm receiver after a 5 second delay
+//        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+//                + 5 * 1000, alarmIntent);
+        SunshineSyncAdapter.syncImmediately(context);
     }
 
     @Override
