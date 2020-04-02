@@ -3,13 +3,10 @@ package com.example.royma.sunshine.app;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -77,18 +74,12 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // TODO: Simplify to switch case
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
-        // Display location from preferences
-        if (id == R.id.action_view_location) {
-            openLocationInMap();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -111,20 +102,6 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         }
     }
 
-    private void openLocationInMap(){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = Utility.getPreferredLocation(this);
-
-        // Creates URI for map intent
-        Uri mapIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
-        // Create intent using map URI
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapIntentUri);
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
-        } else {
-            Log.d(LOG_TAG, "Could not display " + location + "\nNo map application found");
-        }
-    }
 
     @Override
     public void onItemSelected(Uri dateUri) {
@@ -159,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            assert notificationManager != null;
             notificationManager.createNotificationChannel(channel);
         }
     }
