@@ -24,7 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class Utility {
+public class Utility {
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),
@@ -36,6 +36,10 @@ class Utility {
         return prefs.getString(context.getString(R.string.pref_tempUnit_key),
                 context.getString(R.string.pref_tempUnit_metric))
                 .equals(context.getString(R.string.pref_tempUnit_metric));
+    }
+
+    public static String formatTemperature(Context context, double temperature) {
+        return formatTemperature(context, temperature, isMetric(context));
     }
 
     static String formatTemperature(Context context, double temperature, boolean isMetric) {

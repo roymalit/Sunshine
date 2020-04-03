@@ -1,14 +1,16 @@
 package com.example.royma.sunshine.app;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.royma.sunshine.app.sync.SunshineSyncAdapter;
 
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback{
 
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     private String mLocation;
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
+    private static final String NOTIFICATION_CHANNEL_ID = "SunshineWeatherNotification";
 
     public MainActivity() {
     }
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLocation = Utility.getPreferredLocation(this);
+        createNotificationChannel();
 
         setContentView(R.layout.activity_main);
         if (findViewById(R.id.weather_detail_container) != null) {
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         if (null != forecastFragment) {
             forecastFragment.setUseTodayLayout(!mTwoPane);
         }
+
+        SunshineSyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override
@@ -68,18 +74,12 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // TODO: Simplify to switch case
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
-        // Display location from preferences
-        if (id == R.id.action_view_location) {
-            openLocationInMap();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -102,20 +102,6 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         }
     }
 
-    private void openLocationInMap(){
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = Utility.getPreferredLocation(this);
-
-        // Creates URI for map intent
-        Uri mapIntentUri = Uri.parse("geo:0,0?q=" + Uri.encode(location));
-        // Create intent using map URI
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapIntentUri);
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
-        } else {
-            Log.d(LOG_TAG, "Could not display " + location + "\nNo map application found");
-        }
-    }
 
     @Override
     public void onItemSelected(Uri dateUri) {
@@ -135,6 +121,23 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             Intent intent = new Intent(this, DetailActivity.class)
                     .setData(dateUri);
             startActivity(intent);
+        }
+    }
+
+    private void createNotificationChannel(){
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }

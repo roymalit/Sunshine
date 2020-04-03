@@ -1,5 +1,9 @@
 package com.example.royma.sunshine.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,24 +22,24 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.royma.sunshine.app.data.WeatherContract;
+import com.example.royma.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment containing List of Weather items.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     // ArrayAdapter initialised outside of methods
     private ForecastAdapter mForecastAdapter;
     private static final int FORECAST_LOADER = 0;
 
+    private final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
     private boolean mUseTodayLayout;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     private static final String SELECTED_KEY = "selected_position";
-    /*TODO: Implement first list item selected by default
-        mListView.setSelection(0);
-        mListView.getSelectedView().setSelected(true);
-     */
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -103,8 +108,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         int id = item.getItemId();
 
         // Reloads forecast list
-        if (id == R.id.action_refresh) {
-            updateWeather();
+//        if (id == R.id.action_refresh) {
+//            updateWeather();
+//            return true;
+//        }
+
+        // Display location from preferences
+        if (id == R.id.action_view_location) {
+            openLocationInMap();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -124,7 +135,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Attaches adapter to view
-        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView = rootView.findViewById(R.id.listview_forecast);
         mListView.setAdapter(mForecastAdapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -170,19 +181,29 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
         // Refresh weather on app load
-        updateWeather();
+        // updateWeather();
     }
 
     public void onLocationChange(){
+        // Updates list after location setting change
         updateWeather();
         getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
     }
 
     private void updateWeather(){
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
-        // Retrieve user preferred location. Use default if none found
-        String locationPref = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(locationPref);
+        Context context = getActivity();
+//        alarmMgr =  (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//
+//        Intent intent = new Intent(context, SunshineService.AlarmReceiver.class);
+//        // Retrieve user preferred location. Use default if none found
+//        intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA,
+//                Utility.getPreferredLocation(context));
+//        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+//
+//        // Run alarm receiver after a 5 second delay
+//        alarmMgr.set(AlarmManager.ELAPSED_REA     LTIME_WAKEUP, SystemClock.elapsedRealtime()
+//                + 5 * 1000, alarmIntent);
+        SunshineSyncAdapter.syncImmediately(context);
     }
 
     @Override
@@ -193,6 +214,32 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // so check for that before storing.
         if (mPosition != ListView.INVALID_POSITION){
             outState.putInt(SELECTED_KEY, mPosition);
+        }
+    }
+
+    private void openLocationInMap(){
+        // Using the URI scheme for showing a location found on a map.  This super-handy
+        // intent can is detailed in the "Common Intents" page of Android's developer site:
+        // http://developer.android.com/guide/components/intents-common.html#Maps
+        if ( null != mForecastAdapter ) {
+            Cursor c = mForecastAdapter.getCursor();
+            if (null != c) {
+                c.moveToPosition(0);
+                String posLat = c.getString(COL_COORD_LAT);
+                String posLong = c.getString(COL_COORD_LONG);
+                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+                Log.d(LOG_TAG, "Latitude: " + COL_COORD_LAT);
+                Log.d(LOG_TAG, "Longitude: " + COL_COORD_LONG);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
+                }
+            }
         }
     }
 
@@ -222,6 +269,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
             mListView.smoothScrollToPosition(mPosition);
+        }
+
+        if (!mForecastAdapter.isEmpty()) {
+            // TODO: Figure out select first item
+            mListView.setSelection(0);
+            // mListView.getSelectedView().setSelected(true);
+//            Log.d(LOG_TAG, "mListView selected View: " + mListView.getSelectedView());
+//            Log.d(LOG_TAG, "mListView selected itemPosition: " + mListView.getSelectedItemPosition());
+//            Log.d(LOG_TAG, "mListView selected Item: " + mListView.getItemAtPosition(0));
+            // mListView.getSelectedView().setPressed(true);
         }
     }
 
