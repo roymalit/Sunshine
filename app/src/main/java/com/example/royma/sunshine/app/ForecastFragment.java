@@ -275,9 +275,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             // TODO: Figure out select first item
             mListView.setSelection(0);
             // mListView.getSelectedView().setSelected(true);
-            Log.d(LOG_TAG, "mListView selected View: " + mListView.getSelectedView());
-            Log.d(LOG_TAG, "mListView selected itemPosition: " + mListView.getSelectedItemPosition());
-            Log.d(LOG_TAG, "mListView selected Item: " + mListView.getItemAtPosition(0));
+//            Log.d(LOG_TAG, "mListView selected View: " + mListView.getSelectedView());
+//            Log.d(LOG_TAG, "mListView selected itemPosition: " + mListView.getSelectedItemPosition());
+//            Log.d(LOG_TAG, "mListView selected Item: " + mListView.getItemAtPosition(0));
             // mListView.getSelectedView().setPressed(true);
         }
     }
