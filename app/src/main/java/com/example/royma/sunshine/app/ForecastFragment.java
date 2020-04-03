@@ -40,10 +40,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private PendingIntent alarmIntent;
 
     private static final String SELECTED_KEY = "selected_position";
-    /*TODO: Implement first list item selected by default
-        mListView.setSelection(0);
-        mListView.getSelectedView().setSelected(true);
-     */
 
     /**
      * A callback interface that all activities containing this fragment must
