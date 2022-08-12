@@ -108,10 +108,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         int id = item.getItemId();
 
         // Reloads forecast list
-//        if (id == R.id.action_refresh) {
-//            updateWeather();
-//            return true;
-//        }
+        if (id == R.id.action_refresh) {
+            updateWeather();
+            return true;
+        }
 
         // Display location from preferences
         if (id == R.id.action_view_location) {
